@@ -11,7 +11,7 @@ namespace ABearCodes.Valheim.SimpleRecycling.Recycling
 
         public Recipe Recipe { get; set; }
         public List<string> RecyclingImpediments { get; } = new List<string>();
-        
+
         public List<string> DisplayImpediments { get; } = new List<string>();
         public List<RecyclingYieldEntry> Entries { get; } = new List<RecyclingYieldEntry>();
 

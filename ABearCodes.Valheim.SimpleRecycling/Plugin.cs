@@ -9,7 +9,7 @@ namespace ABearCodes.Valheim.SimpleRecycling
 {
     [BepInPlugin("com.github.abearcodes.valheim.simplerecycling",
         "SimpleRecycling",
-        "0.0.13")]
+        "0.0.14")]
     public class Plugin : BaseUnityPlugin
     {
         public static PluginSettings Settings;
@@ -35,7 +35,6 @@ namespace ABearCodes.Valheim.SimpleRecycling
 
         private void OnDestroy()
         {
-            Debug.Log("Unpatching now");
             _harmony.UnpatchSelf();
         }
 

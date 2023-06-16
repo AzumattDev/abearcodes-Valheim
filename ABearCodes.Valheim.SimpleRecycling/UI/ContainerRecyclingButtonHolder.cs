@@ -27,41 +27,45 @@ namespace ABearCodes.Valheim.SimpleRecycling.UI
             {
                 SetupButton();
             }
+
             _recycleAllButton.gameObject.SetActive(Plugin.Settings.ContainerRecyclingEnabled.Value);
         }
 
         private void OnDestroy()
         {
-            Destroy(_recycleAllButton.gameObject);
+            try
+            {
+                Destroy(_recycleAllButton.gameObject);
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         private void FixedUpdate()
         {
-            if (!Plugin.Settings.ContainerRecyclingEnabled.Value) return; 
+            if (!Plugin.Settings.ContainerRecyclingEnabled.Value) return;
             if (_recycleAllButton == null) return;
-            if(!InventoryGui.instance.IsContainerOpen() && _prefired) SetButtonState(false);
+            if (!InventoryGui.instance.IsContainerOpen() && _prefired) SetButtonState(false);
         }
 
         private void SetupButton()
         {
             _recycleAllButton = Instantiate(InventoryGui.instance.m_takeAllButton,
                 InventoryGui.instance.m_takeAllButton.transform);
-            
+
             _recycleAllButton.transform.SetParent(InventoryGui.instance.m_takeAllButton.transform.parent);
-            
+
             var newLocalPosition = GetSavedButtonPosition();
-            _recycleAllButton.transform.localPosition = newLocalPosition; 
+            _recycleAllButton.transform.localPosition = newLocalPosition;
             _recycleAllButton.onClick.RemoveAllListeners();
             _recycleAllButton.onClick.AddListener(OnRecycleAllPressed);
             _textComponent = _recycleAllButton.GetComponentInChildren<Text>();
             _imageComponent = _recycleAllButton.GetComponentInChildren<Image>();
             var dragger = _recycleAllButton.gameObject.AddComponent<UIDragger>();
-            dragger.OnUIDropped += (source, position) =>
-            {
-                Plugin.Settings.ContainerRecyclingButtonPositionJsonString.Value = JsonUtility.ToJson(position);
-            };
+            dragger.OnUIDropped += (source, position) => { Plugin.Settings.ContainerRecyclingButtonPositionJsonString.Value = JsonUtility.ToJson(position); };
             SetButtonState(false);
-            
         }
 
         private Vector3 GetSavedButtonPosition()
@@ -85,6 +89,7 @@ namespace ABearCodes.Valheim.SimpleRecycling.UI
                 Plugin.Log.LogWarning($"Tried to parse recycling button position, but couldn't. Error: {e.Message}");
                 res = default(T);
             }
+
             return false;
         }
 
@@ -103,7 +108,7 @@ namespace ABearCodes.Valheim.SimpleRecycling.UI
                 _imageComponent.color = new Color(0.5f, 1f, 0.5f);
             }
         }
-        
+
         private void OnRecycleAllPressed()
         {
             if (!Player.m_localPlayer)
@@ -113,9 +118,9 @@ namespace ABearCodes.Valheim.SimpleRecycling.UI
                 SetButtonState(true);
                 return;
             }
+
             SetButtonState(false);
             OnRecycleAllTriggered?.Invoke();
         }
-
     }
 }
